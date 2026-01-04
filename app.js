@@ -165,23 +165,24 @@ els.resetBtn.addEventListener("click", () => {
 });
 
 // Install hint sheet
-els.installHintBtn.addEventListener("click", () => {
-  els.sheet.hidden = false;
-});
-els.closeSheet.addEventListener("click", () => {
+function hideSheet() {
   els.sheet.hidden = true;
-});
-els.sheet.addEventListener("click", (e) => {
-  if (e.target === els.sheet) els.sheet.hidden = true;
+}
+function showSheet() {
+  els.sheet.hidden = false;
+}
+
+els.installHintBtn.addEventListener("click", showSheet);
+
+// iOS sometimes prefers touch events, so we handle both
+els.closeSheet.addEventListener("click", hideSheet);
+els.closeSheet.addEventListener("touchend", (e) => {
+  e.preventDefault();
+  hideSheet();
 });
 
-// Register service worker (offline)
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", async () => {
-    try {
-      await navigator.serviceWorker.register("./sw.js");
-    } catch (e) {
-      // ignore
-    }
-  });
-}
+els.sheet.addEventListener("click", (e) => {
+  if (e.target === els.sheet) hideSheet();
+});
+
+
