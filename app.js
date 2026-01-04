@@ -164,14 +164,6 @@ els.resetBtn.addEventListener("click", () => {
   if (ok) resetDay();
 });
 
-// Install hint sheet
-function hideSheet() {
-  els.sheet.hidden = true;
-}
-function showSheet() {
-  els.sheet.hidden = false;
-}
-
 els.installHintBtn.addEventListener("click", showSheet);
 
 // iOS sometimes prefers touch events, so we handle both
@@ -184,5 +176,6 @@ els.closeSheet.addEventListener("touchend", (e) => {
 els.sheet.addEventListener("click", (e) => {
   if (e.target === els.sheet) hideSheet();
 });
+
 
 
