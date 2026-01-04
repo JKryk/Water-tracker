@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0ea5e9" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Water Tracker" />
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon-180.png" />
+
+  <link rel="stylesheet" href="styles.css" />
+  <title>Water Tracker</title>
+</head>
+<body>
+  <main class="app">
+    <header class="top">
+      <div>
+        <h1>Water Tracker</h1>
+        <p class="sub" id="dateLabel">Today</p>
+      </div>
+      <button class="ghost" id="resetBtn" title="Reset for today">Reset</button>
+    </header>
+
+    <section class="card">
+      <div class="progressRow">
+        <div class="big">
+          <div class="bigNum"><span id="totalMl">0</span><span class="unit"> ml</span></div>
+          <div class="goal">Goal: <span id="goalMl">2000</span> ml</div>
+        </div>
+
+        <div class="ringWrap" aria-label="Progress">
+          <svg class="ring" viewBox="0 0 120 120">
+            <circle class="ringBg" cx="60" cy="60" r="46"></circle>
+            <circle class="ringFg" cx="60" cy="60" r="46"></circle>
+          </svg>
+          <div class="ringText">
+            <div class="pct" id="pct">0%</div>
+            <div class="small">done</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="barWrap" aria-hidden="true">
+        <div class="bar">
+          <div class="barFill" id="barFill"></div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" data-add="235">+235 ml <span class="hint">(cup)</span></button>
+        <button class="btn" data-add="330">+330 ml</button>
+        <button class="btn" data-add="500">+500 ml</button>
+        <button class="btn" data-add="150">+150 ml</button>
+      </div>
+
+      <div class="bottomRow">
+        <button class="ghost" id="undoBtn">Undo</button>
+        <div class="streak" id="msg"></div>
+        <button class="ghost" id="installHintBtn" title="How to install">Install</button>
+      </div>
+    </section>
+
+    <section class="card mini">
+      <h2>Log</h2>
+      <ul class="log" id="log"></ul>
+    </section>
+
+    <footer class="foot">
+      <span>Saved on your phone • Works offline</span>
+    </footer>
+  </main>
+
+  <div class="sheet" id="sheet" hidden>
+    <div class="sheetCard">
+      <h3>Install on iPhone</h3>
+      <ol>
+        <li>Open this page in <b>Safari</b></li>
+        <li>Tap <b>Share</b> (square with arrow)</li>
+        <li>Tap <b>Add to Home Screen</b></li>
+      </ol>
+      <button class="btn wide" id="closeSheet">Got it</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
