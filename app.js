@@ -71,6 +71,21 @@ function clamp(n, min, max) {
   return Math.max(min, Math.min(max, n));
 }
 
+function confettiPop() {
+  // lightweight confetti (no libraries)
+  const pieces = 26;
+  for (let i = 0; i < pieces; i++) {
+    const d = document.createElement("div");
+    d.className = "confetti";
+    d.style.left = Math.random() * 100 + "vw";
+    d.style.transform = `translateY(0) rotate(${Math.random()*180}deg)`;
+    d.style.background = ["#ff4fa3", "#60a5fa", "#22c55e", "#f59e0b", "#a78bfa"][i % 5];
+    d.style.animationDuration = (0.9 + Math.random() * 0.8) + "s";
+    document.body.appendChild(d);
+    setTimeout(() => d.remove(), 1800);
+  }
+}
+
 function updateUI() {
   // date label
   els.dateLabel.textContent = state.day;
@@ -202,6 +217,7 @@ els.closeSheet.addEventListener("touchend", (e) => {
 els.sheet.addEventListener("click", (e) => {
   if (e.target === els.sheet) hideSheet();
 });
+
 
 
 
