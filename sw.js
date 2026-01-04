@@ -1,4 +1,4 @@
-const CACHE_NAME = "water-tracker-cache-v2";
+const CACHE_NAME = "water-tracker-cache-v3";
 
 const ASSETS = [
   "./",
@@ -31,4 +31,5 @@ self.addEventListener("fetch", (event) => {
     caches.match(event.request).then((cached) => cached || fetch(event.request))
   );
 });
+
 
