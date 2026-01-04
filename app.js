@@ -120,9 +120,35 @@ function addWater(ml) {
   state.entries.push(entry);
   state.total += ml;
   state.lastUndo = entry;
+
+  // squishy wiggle feedback
+  document.querySelector(".card")?.classList.add("wiggle");
+  setTimeout(() => document.querySelector(".card")?.classList.remove("wiggle"), 380);
+
+  const wasBelow = state.total - ml < state.goal;
+  const nowHit = state.total >= state.goal;
+
   saveState();
   updateUI();
+
+  // silly messages
+  const msgs = [
+    "sip sip 😌💧",
+    "hydration queen 👑💦",
+    "water acquired ✅",
+    "that’s a cute sip fr 🥺",
+    "ok health era ✨",
+    "slaydration 💅💧"
+  ];
+
+  if (wasBelow && nowHit) {
+    els.msg.textContent = "GOAL SMASHED!!! 🎉💧";
+    confettiPop();
+  } else {
+    els.msg.textContent = msgs[Math.floor(Math.random() * msgs.length)];
+  }
 }
+
 
 function undo() {
   if (!state.lastUndo) return;
@@ -176,6 +202,7 @@ els.closeSheet.addEventListener("touchend", (e) => {
 els.sheet.addEventListener("click", (e) => {
   if (e.target === els.sheet) hideSheet();
 });
+
 
 
 
