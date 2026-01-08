@@ -15,6 +15,7 @@ const els = {
   installHintBtn: document.getElementById("installHintBtn"),
   sheet: document.getElementById("sheet"),
   closeSheet: document.getElementById("closeSheet"),
+  history: document.getElementById("history"),
 };
 
 const STORAGE_KEY = "water-tracker-v1";
@@ -34,34 +35,82 @@ function nowTime(d = new Date()) {
   return `${hh}:${mm}`;
 }
 
+function formatDateLabel(yyyyMMdd) {
+  // "2026-01-08" -> "8 Jan"
+  const [y, m, d] = yyyyMMdd.split("-").map(Number);
+  const dt = new Date(y, m - 1, d);
+  return dt.toLocaleDateString(undefined, { day: "numeric", month: "short" });
+}
+
+function addDays(yyyyMMdd, delta) {
+  const [y, m, d] = yyyyMMdd.split("-").map(Number);
+  const dt = new Date(y, m - 1, d);
+  dt.setDate(dt.getDate() + delta);
+  return todayKey(dt);
+}
+
+function ensureHistoryShape(s) {
+  if (!s.history || typeof s.history !== "object") s.history = {};
+  return s;
+}
+
+function saveDayToHistory(dayKey, totalMl) {
+  state.history[dayKey] = {
+    total: totalMl,
+    goal: state.goal,
+    hit: totalMl >= state.goal
+  };
+}
+
+
 function loadState() {
   const raw = localStorage.getItem(STORAGE_KEY);
-  if (!raw) {
-    return {
-      goal: GOAL_ML,
-      day: todayKey(),
-      total: 0,
-      entries: [], // {ml, time}
-      lastUndo: null,
-    };
-  }
+  const fresh = {
+    goal: GOAL_ML,
+    day: todayKey(),
+    total: 0,
+    entries: [],
+    lastUndo: null,
+    history: {}
+  };
+
+  if (!raw) return fresh;
+
   try {
-    const s = JSON.parse(raw);
-    // new day? reset automatically
-    if (s.day !== todayKey()) {
-      return { ...s, day: todayKey(), total: 0, entries: [], lastUndo: null };
+    let s = JSON.parse(raw);
+    s = ensureHistoryShape(s);
+
+    const today = todayKey();
+
+    // If day changed, store yesterday summary then reset for today
+    if (s.day && s.day !== today) {
+      // Save old day total into history
+      saveDayToHistory(s.day, s.total || 0);
+
+      // (Optional) keep only recent ~10 days to avoid bloating storage
+      const keys = Object.keys(s.history).sort(); // ascending
+      if (keys.length > 10) {
+        for (let i = 0; i < keys.length - 10; i++) delete s.history[keys[i]];
+      }
+
+      s.day = today;
+      s.total = 0;
+      s.entries = [];
+      s.lastUndo = null;
     }
+
+    // Ensure basics exist
+    if (typeof s.goal !== "number") s.goal = GOAL_ML;
+    if (typeof s.total !== "number") s.total = 0;
+    if (!Array.isArray(s.entries)) s.entries = [];
+    if (!("lastUndo" in s)) s.lastUndo = null;
+
     return s;
   } catch {
-    return {
-      goal: GOAL_ML,
-      day: todayKey(),
-      total: 0,
-      entries: [],
-      lastUndo: null,
-    };
+    return fresh;
   }
 }
+
 
 function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -217,6 +266,7 @@ els.closeSheet.addEventListener("touchend", (e) => {
 els.sheet.addEventListener("click", (e) => {
   if (e.target === els.sheet) hideSheet();
 });
+
 
 
 
