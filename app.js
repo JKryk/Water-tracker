@@ -273,6 +273,8 @@ function resetDay() {
 
 
 let state = loadState();
+state = ensureHistoryShape(state);
+
 updateUI();
 
 // Buttons
@@ -299,6 +301,7 @@ els.closeSheet.addEventListener("touchend", (e) => {
 els.sheet.addEventListener("click", (e) => {
   if (e.target === els.sheet) hideSheet();
 });
+
 
 
 
