@@ -259,13 +259,18 @@ function undo() {
 }
 
 function resetDay() {
+  // store current day as 0 after reset, but keep what was before in history
+  saveDayToHistory(state.day, state.total);
+
   state.day = todayKey();
   state.total = 0;
   state.entries = [];
   state.lastUndo = null;
+
   saveState();
   updateUI();
 }
+
 
 let state = loadState();
 updateUI();
@@ -294,6 +299,7 @@ els.closeSheet.addEventListener("touchend", (e) => {
 els.sheet.addEventListener("click", (e) => {
   if (e.target === els.sheet) hideSheet();
 });
+
 
 
 
