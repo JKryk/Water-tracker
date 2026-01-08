@@ -169,6 +169,34 @@ function updateUI() {
     });
   }
 
+    // history (last 3 days incl today)
+  els.history.innerHTML = "";
+
+  // Make sure today's current progress is visible too (even before day ends)
+  const temp = { ...state.history };
+  temp[state.day] = {
+    total: state.total,
+    goal: state.goal,
+    hit: state.total >= state.goal
+  };
+
+  const days = [addDays(state.day, -2), addDays(state.day, -1), state.day];
+
+  days.forEach((dk) => {
+    const h = temp[dk];
+    const li = document.createElement("li");
+
+    if (!h) {
+      li.innerHTML = `<span class="t">${formatDateLabel(dk)}</span><span class="v">—</span>`;
+    } else {
+      const badge = h.hit ? "✅" : "💧";
+      li.innerHTML = `<span class="t">${formatDateLabel(dk)}</span><span class="v">${h.total} ml ${badge}</span>`;
+    }
+
+    els.history.appendChild(li);
+  });
+
+  
   // message
   if (state.total === 0) els.msg.textContent = "Start with a sip 😈";
   else if (state.total < state.goal) els.msg.textContent = `${state.goal - state.total} ml to go`;
@@ -266,6 +294,7 @@ els.closeSheet.addEventListener("touchend", (e) => {
 els.sheet.addEventListener("click", (e) => {
   if (e.target === els.sheet) hideSheet();
 });
+
 
 
 
